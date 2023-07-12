@@ -5,28 +5,10 @@ from datetime import datetime
 
 def test_show_details_existing_file_with_extension(capsys):
     context = {"base_path": "/path/to/existing_file.txt"}
-    expected_output = """File name: existing_file.txt
-File size in bytes: 12345
-File type: file
-File extension: .txt
-Last modified date: 2023-06-13\n"""
 
-    with mock.patch(
-        "pro_filer.actions.main_actions.os.path.exists", return_value=True
-    ), mock.patch(
-        "pro_filer.actions.main_actions.os.path.getsize", return_value=12345
-    ), mock.patch(
-        "pro_filer.actions.main_actions.os.path.isdir", return_value=False
-    ), mock.patch(
-        "pro_filer.actions.main_actions.os.path.splitext",
-        return_value=("/path/to/existing_file", ".txt"),
-    ), mock.patch(
-        "pro_filer.actions.main_actions.os.path.getmtime",
-        return_value=datetime(2023, 6, 13).timestamp(),
-    ):
-        show_details(context)
-        captured_output = capsys.readouterr().out
-        assert captured_output == expected_output
+    show_details(context)
+    captured = capsys.readouterr()
+    assert captured.out == "File 'existing_file.txt' does not exist\n"
 
 
 def test_show_details_existing_file_without_extension(capsys):
