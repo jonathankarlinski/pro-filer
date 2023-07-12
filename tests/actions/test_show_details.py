@@ -1,5 +1,5 @@
 from pro_filer.actions.main_actions import show_details  # NOQA
-import os
+import unittest.mock as mock
 from datetime import datetime
 
 
@@ -11,15 +11,22 @@ File type: file
 File extension: .txt
 Last modified date: 2023-06-13\n"""
 
-    os.path.exists = lambda path: True
-    os.path.getsize = lambda path: 12345
-    os.path.isdir = lambda path: False
-    os.path.splitext = lambda path: ("/path/to/existing_file", ".txt")
-    os.path.getmtime = lambda path: datetime(2023, 6, 13).timestamp()
-
-    show_details(context)
-    captured_output = capsys.readouterr().out
-    assert captured_output == expected_output
+    with mock.patch(
+        "pro_filer.actions.main_actions.os.path.exists", return_value=True
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getsize", return_value=12345
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.isdir", return_value=False
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.splitext",
+        return_value=("/path/to/existing_file", ".txt"),
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getmtime",
+        return_value=datetime(2023, 6, 13).timestamp(),
+    ):
+        show_details(context)
+        captured_output = capsys.readouterr().out
+        assert captured_output == expected_output
 
 
 def test_show_details_existing_file_without_extension(capsys):
@@ -30,15 +37,22 @@ File type: file
 File extension: [no extension]
 Last modified date: 2023-06-13\n"""
 
-    os.path.exists = lambda path: True
-    os.path.getsize = lambda path: 9876
-    os.path.isdir = lambda path: False
-    os.path.splitext = lambda path: ("/path/to/existing_file", "")
-    os.path.getmtime = lambda path: datetime(2023, 6, 13).timestamp()
-
-    show_details(context)
-    captured_output = capsys.readouterr().out
-    assert captured_output == expected_output
+    with mock.patch(
+        "pro_filer.actions.main_actions.os.path.exists", return_value=True
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getsize", return_value=9876
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.isdir", return_value=False
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.splitext",
+        return_value=("/path/to/existing_file", ""),
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getmtime",
+        return_value=datetime(2023, 6, 13).timestamp(),
+    ):
+        show_details(context)
+        captured_output = capsys.readouterr().out
+        assert captured_output == expected_output
 
 
 def test_show_details_existing_directory(capsys):
@@ -49,12 +63,19 @@ File type: directory
 File extension: [no extension]
 Last modified date: 2023-06-13\n"""
 
-    os.path.exists = lambda path: True
-    os.path.getsize = lambda path: 0
-    os.path.isdir = lambda path: True
-    os.path.splitext = lambda path: ("/path/to/existing_directory", "")
-    os.path.getmtime = lambda path: datetime(2023, 6, 13).timestamp()
-
-    show_details(context)
-    captured_output = capsys.readouterr().out
-    assert captured_output == expected_output
+    with mock.patch(
+        "pro_filer.actions.main_actions.os.path.exists", return_value=True
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getsize", return_value=0
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.isdir", return_value=True
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.splitext",
+        return_value=("/path/to/existing_directory", ""),
+    ), mock.patch(
+        "pro_filer.actions.main_actions.os.path.getmtime",
+        return_value=datetime(2023, 6, 13).timestamp(),
+    ):
+        show_details(context)
+        captured_output = capsys.readouterr().out
+        assert captured_output == expected_output
